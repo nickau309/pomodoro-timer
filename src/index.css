@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Arial Rounded";
+  src: url("fonts/Arial-Rounded/Arial-Rounded-MT.ttf");
+}
+
+@font-face {
+  font-family: "Arial Rounded";
+  src: url("fonts/Arial-Rounded/Arial-Rounded-MT-Bold.ttf");
+  font-weight: bold;
+}
