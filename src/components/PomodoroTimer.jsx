@@ -1,7 +1,7 @@
 import React from "react";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
 
-import useSetting from "../hooks/useSetting";
+import { useSetting } from "../contexts/SettingContext";
 import useTimer from "../hooks/useTimer";
 
 import CountResetButton from "./CountResetButton";
@@ -12,8 +12,7 @@ import Setting from "./Setting";
 import SlotSelection from "./SlotSelection";
 
 export default function PomodoroTimer() {
-  const { setting, setSetting } = useSetting();
-
+  const setting = useSetting();
   const {
     timer,
     isTiming,
@@ -51,7 +50,7 @@ export default function PomodoroTimer() {
               Pomodoro Timer
             </span>
           </h1>
-          <Setting setting={setting} setSetting={setSetting} />
+          <Setting />
         </header>
         <main>
           <ProgressBar

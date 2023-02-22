@@ -1,10 +1,17 @@
 import React from "react";
+import {
+  useSetting,
+  useSettingDispatch,
+} from "../../../contexts/SettingContext";
 import HorizontalNumberInput from "./HorizontalNumberInput";
 import Row from "./Row";
 import Select from "./Select";
 import Slider from "./Slider";
 
-export default function Alarm({ alarm, setAlarm }) {
+export default function Alarm() {
+  const { alarm } = useSetting();
+  const dispatch = useSettingDispatch();
+
   return (
     <>
       <Row>
@@ -12,9 +19,10 @@ export default function Alarm({ alarm, setAlarm }) {
           label="Alarm Sound"
           list={["bell", "bird", "digital", "kitchen", "wood"]}
           value={alarm.name}
-          setValue={(value) => {
-            setAlarm({
-              name: value,
+          setValue={(name) => {
+            dispatch({
+              type: "alarm",
+              alarm: { name },
             });
           }}
         />
@@ -22,9 +30,10 @@ export default function Alarm({ alarm, setAlarm }) {
       <div className="flex items-center justify-end gap-4">
         <Slider
           value={alarm.volume}
-          setValue={(value) => {
-            setAlarm({
-              volume: value,
+          setValue={(volume) => {
+            dispatch({
+              type: "alarm",
+              alarm: { volume },
             });
           }}
         />
@@ -33,9 +42,10 @@ export default function Alarm({ alarm, setAlarm }) {
         <HorizontalNumberInput
           label="repeat"
           value={alarm.repeat}
-          setValue={(value) => {
-            setAlarm({
-              repeat: value,
+          setValue={(repeat) => {
+            dispatch({
+              type: "alarm",
+              alarm: { repeat },
             });
           }}
         />

@@ -4,7 +4,7 @@ import { Cog8ToothIcon } from "@heroicons/react/20/solid";
 import ColorPicker from "./ColorPicker";
 import Content from "./Content";
 
-export default function Setting({ setting, setSetting }) {
+export default function Setting() {
   const [isOpen, setIsOpen] = useState(false);
 
   const openDialog = () => {
@@ -71,16 +71,7 @@ export default function Setting({ setting, setSetting }) {
             <div className="flex min-h-full items-center justify-center">
               <ColorPicker
                 closeColorPicker={closeColorPicker}
-                color={setting.color[slot]}
                 isColorPickerOpen={isColorPickerOpen}
-                setColor={(selectedColor) => {
-                  setSetting({
-                    type: "color",
-                    color: {
-                      [slot]: selectedColor,
-                    },
-                  });
-                }}
                 slot={slot}
               />
               <Content
@@ -88,8 +79,6 @@ export default function Setting({ setting, setSetting }) {
                 closeDialog={closeDialog}
                 isColorPickerOpen={isColorPickerOpen}
                 openColorPicker={openColorPicker}
-                setting={setting}
-                setSetting={setSetting}
               />
             </div>
           </div>

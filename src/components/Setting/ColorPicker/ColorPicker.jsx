@@ -1,16 +1,28 @@
 import React from "react";
 import { Dialog } from "@headlessui/react";
+import {
+  useSetting,
+  useSettingDispatch,
+} from "../../../contexts/SettingContext";
 import ColorBox from "./ColorBox";
 
 export default function ColorPicker({
   closeColorPicker,
-  color,
   isColorPickerOpen,
-  setColor,
   slot,
 }) {
+  const setting = useSetting();
+  const dispatch = useSettingDispatch();
+
+  const color = setting.color[slot];
+
   const pickColor = (value) => {
-    setColor(value);
+    dispatch({
+      type: "color",
+      color: {
+        [slot]: value,
+      },
+    });
     closeColorPicker();
   };
 

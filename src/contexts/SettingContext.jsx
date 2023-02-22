@@ -1,4 +1,9 @@
-import { useEffect, useReducer } from "react";
+import React from "react";
+import { createContext, useContext, useEffect, useReducer } from "react";
+
+const SettingContext = createContext(null);
+
+const SettingDispatchContext = createContext(null);
 
 const defaultSetting = {
   duration: {
@@ -83,8 +88,8 @@ function reducer(state, action) {
   }
 }
 
-export default function useSetting() {
-  const [setting, setSetting] = useReducer(reducer, null, () => {
+export function SettingProvider({ children }) {
+  const [setting, dispatch] = useReducer(reducer, null, () => {
     const savedSetting = JSON.parse(localStorage.getItem("setting"));
     return savedSetting || defaultSetting;
   });
@@ -93,5 +98,19 @@ export default function useSetting() {
     localStorage.setItem("setting", JSON.stringify(setting));
   }, [setting]);
 
-  return { setting, setSetting };
+  return (
+    <SettingContext.Provider value={setting}>
+      <SettingDispatchContext.Provider value={dispatch}>
+        {children}
+      </SettingDispatchContext.Provider>
+    </SettingContext.Provider>
+  );
+}
+
+export function useSetting() {
+  return useContext(SettingContext);
+}
+
+export function useSettingDispatch() {
+  return useContext(SettingDispatchContext);
 }

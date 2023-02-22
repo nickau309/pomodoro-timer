@@ -1,8 +1,15 @@
 import React from "react";
+import {
+  useSetting,
+  useSettingDispatch,
+} from "../../../../contexts/SettingContext";
 import Row from "../Row";
 import VerticalNumberInput from "./VerticalNumberInput";
 
-export default function CounterDuration({ duration, setDuration }) {
+export default function CounterDuration() {
+  const { duration } = useSetting();
+  const dispatch = useSettingDispatch();
+
   return (
     <>
       <div>
@@ -15,8 +22,11 @@ export default function CounterDuration({ duration, setDuration }) {
             label={entry[0]}
             value={entry[1]}
             setValue={(value) => {
-              setDuration({
-                [entry[0]]: value,
+              dispatch({
+                type: "duration",
+                duration: {
+                  [entry[0]]: value,
+                },
               });
             }}
           />

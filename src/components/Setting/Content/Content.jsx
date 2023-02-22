@@ -1,6 +1,13 @@
 import React, { forwardRef } from "react";
 import { Dialog } from "@headlessui/react";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 import { ArrowPathIcon } from "@heroicons/react/24/solid";
+
+import {
+  useSetting,
+  useSettingDispatch,
+} from "../../../contexts/SettingContext";
+
 import Alarm from "./Alarm";
 import ColorTheme from "./ColorTheme";
 import CounterDuration from "./CounterDuration";
@@ -11,9 +18,12 @@ import TimeInput from "./TimeInput";
 import Toggle from "./Toggle";
 
 const Content = forwardRef(function Content(
-  { closeDialog, isColorPickerOpen, openColorPicker, setting, setSetting },
+  { closeDialog, isColorPickerOpen, openColorPicker },
   ref
 ) {
+  const setting = useSetting();
+  const dispatch = useSettingDispatch();
+
   return (
     <Dialog.Panel
       className={
@@ -26,32 +36,11 @@ const Content = forwardRef(function Content(
             Timer Setting
           </span>
           <button onClick={closeDialog}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={3}
-              stroke="#000"
-              className="h-6 w-6 opacity-30 duration-100 ease-in-out hover:opacity-50"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            <XMarkIcon className="h-6 w-6 stroke-[3] opacity-30 duration-100 ease-in-out hover:opacity-50" />
           </button>
         </Dialog.Title>
         <Item gap="gap-2.5">
-          <CounterDuration
-            duration={setting.duration}
-            setDuration={(duration) => {
-              setSetting({
-                type: "duration",
-                duration,
-              });
-            }}
-          />
+          <CounterDuration />
         </Item>
         <Item>
           <Row>
@@ -59,7 +48,7 @@ const Content = forwardRef(function Content(
               label="Auto Start Breaks"
               checked={setting.isAutoBreak}
               setChecked={(isAutoBreak) => {
-                setSetting({
+                dispatch({
                   type: "isAutoBreak",
                   isAutoBreak,
                 });
@@ -73,7 +62,7 @@ const Content = forwardRef(function Content(
               label="Auto Start Pomodoros"
               checked={setting.isAutoPomodoro}
               setChecked={(isAutoPomodoro) => {
-                setSetting({
+                dispatch({
                   type: "isAutoPomodoro",
                   isAutoPomodoro,
                 });
@@ -87,7 +76,7 @@ const Content = forwardRef(function Content(
               label="Long Break Interval"
               value={setting.longBreakInterval}
               setValue={(longBreakInterval) => {
-                setSetting({
+                dispatch({
                   type: "longBreakInterval",
                   longBreakInterval,
                 });
@@ -96,15 +85,7 @@ const Content = forwardRef(function Content(
           </Row>
         </Item>
         <Item gap="gap-6">
-          <Alarm
-            alarm={setting.alarm}
-            setAlarm={(alarm) => {
-              setSetting({
-                type: "alarm",
-                alarm,
-              });
-            }}
-          />
+          <Alarm />
         </Item>
         <Item>
           <ColorTheme
@@ -119,7 +100,7 @@ const Content = forwardRef(function Content(
               label="Pomodoro Count Reset Time"
               resetTime={setting.resetTime}
               setResetTime={(resetTime) => {
-                setSetting({
+                dispatch({
                   type: "resetTime",
                   resetTime,
                 });
@@ -133,7 +114,7 @@ const Content = forwardRef(function Content(
             <button
               type="button"
               onClick={() => {
-                setSetting({ type: "reset" });
+                dispatch({ type: "reset" });
               }}
               className="flex items-center gap-2 rounded bg-neutral-300/75 px-2.5 py-2 opacity-90 duration-100 ease-in-out hover:opacity-100 active:translate-y-0.5"
             >

@@ -10,7 +10,7 @@ const ColorBoxMini = forwardRef(function ColorBoxMini(
         ref.current[text] = ele;
       }}
       onClick={handleClick}
-      className={`flex aspect-square w-7 items-center justify-center rounded-lg bg-${color} hover:opacity-80 active:opacity-60`}
+      className={`aspect-square w-7 rounded-lg bg-${color} hover:opacity-80 active:opacity-60`}
     >
       <span className="sr-only">{`${text}: ${color}`}</span>
     </button>
