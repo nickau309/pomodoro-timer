@@ -1,11 +1,11 @@
 import React from "react";
-import { SettingProvider } from "./contexts/SettingContext";
-import PomodoroTimer from "./components/PomodoroTimer";
+import { SettingProvider } from "./contexts";
+import { Root } from "./layouts";
 
 export default function App() {
   return (
     <SettingProvider>
-      <PomodoroTimer />
+      <Root />
     </SettingProvider>
   );
 }
