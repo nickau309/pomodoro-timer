@@ -1,74 +1,66 @@
-import { useCallback, useImperativeHandle, useRef } from "react";
+import { useCallback, useRef } from "react";
+import * as file from "../audios";
+import type { AlarmName } from "../types";
 
-type Handle = {
-  play: (repeat?: number) => void;
-  src: string;
-  volume: number;
+export type AudioControl = ({
+  name,
+  volume,
+  repeat,
+}: AudioControlProps) => void;
+
+type AudioControlProps = {
+  name: AlarmName | "button";
+  volume?: number;
+  repeat?: number;
 };
 
 export default function useAudio() {
-  const handle = useRef<Handle>({} as Handle);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const lockPlayRef = useRef(false);
 
-  const getAudio = () => {
-    if (audioRef.current === null) {
-      audioRef.current = new Audio();
-    }
+  const createNewAudio = (path: string, volume: number) => {
+    audioRef.current?.pause();
+    audioRef.current = new Audio(path);
+    audioRef.current.volume = volume / 100;
     return audioRef.current;
   };
 
   const playAudio = useCallback((audio: HTMLAudioElement) => {
     if (!lockPlayRef.current && audio.paused) {
+      const resetLock = () => {
+        lockPlayRef.current = false;
+      };
       const promise = audio.play();
       lockPlayRef.current = true;
       promise.then(resetLock, resetLock);
     }
   }, []);
 
-  const resetLock = () => {
-    lockPlayRef.current = false;
-  };
-
-  useImperativeHandle(
-    handle,
-    () => ({
-      play(repeat = 1) {
-        const audio = getAudio();
-        if (repeat > 1) {
-          let played = 0;
-          const repeatAlarm = () => {
-            ++played;
-            console.log(played);
-            if (played < repeat) {
-              playAudio(audio);
-            } else {
-              audio.removeEventListener("ended", repeatAlarm);
-            }
-          };
-          audio.addEventListener("ended", repeatAlarm);
+  const play = useCallback<AudioControl>(
+    ({ name, volume = 100, repeat = 1 }) => {
+      const path = file[name];
+      if (audioRef.current !== null && audioRef.current.src.endsWith(path)) {
+        audioRef.current.volume = volume / 100;
+        return;
+      }
+      const audio = createNewAudio(path, volume);
+      let played = 0;
+      const repeatAlarm = () => {
+        ++played;
+        if (played < repeat) {
+          playAudio(audio);
+        } else {
+          audio.removeEventListener("ended", repeatAlarm);
+          audioRef.current = null;
         }
-        playAudio(audio);
-      },
-      get src() {
-        const audio = getAudio();
-        return audio.src;
-      },
-      set src(file: string) {
-        const audio = getAudio();
-        audio.src = file;
-      },
-      get volume() {
-        const audio = getAudio();
-        return audio.volume;
-      },
-      set volume(volume: number) {
-        const audio = getAudio();
-        audio.volume = volume / 100;
-      },
-    }),
-    [playAudio]
+      };
+      if (audio.paused) {
+        audio.addEventListener("ended", repeatAlarm);
+      }
+      playAudio(audio);
+    },
+    [playAudio],
   );
 
-  return handle;
+  return play;
 }

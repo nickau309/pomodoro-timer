@@ -7,23 +7,26 @@ import {
   useReducer,
 } from "react";
 import {
-  PomoTimerAction,
-  PomoTimerProviderProps,
-  PomoTimerState,
-} from "./PomoTimerContext.types";
-import { Slot } from "../../types";
-import {
-  useAlarmSound,
+  useAudio,
   useBeforeUnload,
   useFavicon,
   useInterval,
   useSetStorageResetTime,
+  type AudioControl,
 } from "../../hooks";
+import type { Slot } from "../../types";
+import type {
+  PomoTimerAction,
+  PomoTimerProviderProps,
+  PomoTimerState,
+  SettingState,
+  Status,
+} from "./PomoTimerContext.types";
 
-const PomoTimerContext = createContext<PomoTimerState>({} as PomoTimerState);
-const PomoTimerDispatchContext = createContext<React.Dispatch<PomoTimerAction>>(
-  (() => undefined) as React.Dispatch<PomoTimerAction>
-);
+const AudioControlContext = createContext<AudioControl | null>(null);
+const PomoTimerContext = createContext<PomoTimerState | null>(null);
+const PomoTimerDispatchContext =
+  createContext<React.Dispatch<PomoTimerAction> | null>(null);
 
 export function PomoTimerProvider({ children }: PomoTimerProviderProps) {
   const [pomo, dispatch] = useReducer(reducer, null, () => {
@@ -41,9 +44,8 @@ export function PomoTimerProvider({ children }: PomoTimerProviderProps) {
       }
 
       // Prevent auto start on first render
-      pomo.data.shouldAutoStart = false;
-      // Prevent auto start after refresh
       pomo.data.timestamp = null;
+      pomo.status = "Idle";
 
       return pomo;
     }
@@ -54,63 +56,84 @@ export function PomoTimerProvider({ children }: PomoTimerProviderProps) {
     localStorage.setItem("pomodoro", JSON.stringify(pomo));
   }, [pomo]);
 
-  const isTiming = pomo.data.timestamp !== null;
   const countdown = useCallback(() => {
     dispatch({ type: "UPDATE_TIMER" });
   }, []);
 
-  useInterval(countdown, isTiming ? 100 : null);
+  useInterval(countdown, pomo.status !== "Idle" ? 100 : null);
 
   // Finish a slot after countdown finish
-  const { play } = useAlarmSound(pomo.setting.alarm);
+  const play = useAudio();
   useEffect(() => {
     if (pomo.data.timeLeft <= 0) {
-      play();
+      play(pomo.setting.alarm);
       dispatch({ type: "FINISH_SLOT" });
     }
-  }, [play, pomo.data.timeLeft]);
+  }, [play, pomo.data.timeLeft, pomo.setting.alarm]);
 
-  // Auto start after finish a slot
-  useEffect(() => {
-    if (pomo.data.shouldAutoStart) {
-      setTimeout(dispatch, 500, { type: "START_TIMER" });
-    }
-  }, [pomo.data.slot, pomo.data.shouldAutoStart]);
-
-  useBeforeUnload(isTiming);
+  useBeforeUnload(pomo.status === "Timing");
 
   useFavicon(`favicons/favicon-${pomo.setting.theme[pomo.data.slot]}.ico`);
 
   useSetStorageResetTime(pomo.setting.resetTime);
 
   return (
-    <PomoTimerContext.Provider value={pomo}>
-      <PomoTimerDispatchContext.Provider value={dispatch}>
-        {children}
-      </PomoTimerDispatchContext.Provider>
-    </PomoTimerContext.Provider>
+    <AudioControlContext.Provider value={play}>
+      <PomoTimerContext.Provider value={pomo}>
+        <PomoTimerDispatchContext.Provider value={dispatch}>
+          {children}
+        </PomoTimerDispatchContext.Provider>
+      </PomoTimerContext.Provider>
+    </AudioControlContext.Provider>
   );
 }
 
+export function useAudioControl() {
+  const audioControlContext = useContext(AudioControlContext);
+
+  if (audioControlContext === null) {
+    throw new Error(
+      "useAudioControl has to be used within <PomoTimerProvider />",
+    );
+  }
+
+  return audioControlContext;
+}
+
 export function usePomoTimer() {
-  return useContext(PomoTimerContext);
+  const pomoTimerContext = useContext(PomoTimerContext);
+
+  if (pomoTimerContext === null) {
+    throw new Error("usePomoTimer has to be used within <PomoTimerProvider />");
+  }
+
+  return pomoTimerContext;
 }
 
 export function usePomoTimerDispatch() {
-  return useContext(PomoTimerDispatchContext);
+  const pomoTimerDispatchContext = useContext(PomoTimerDispatchContext);
+
+  if (pomoTimerDispatchContext === null) {
+    throw new Error(
+      "usePomoTimerDispatch has to be used within <PomoTimerProvider />",
+    );
+  }
+
+  return pomoTimerDispatchContext;
 }
 
 function reducer(
   state: PomoTimerState,
-  action: PomoTimerAction
+  action: PomoTimerAction,
 ): PomoTimerState {
   switch (action.type) {
     case "SET_DURATION": {
+      const { key: slot, value: duration } = action;
       const timeLeft =
-        state.data.slot === action.slot
+        state.data.slot === slot
           ? state.data.timeLeft +
-            action.duration * 60 * 1000 -
-            state.setting.duration[action.slot] * 60 * 1000
+            duration * 60 * 1000 -
+            state.setting.duration[slot] * 60 * 1000
           : state.data.timeLeft;
 
       return {
@@ -119,7 +142,7 @@ function reducer(
           ...state.setting,
           duration: {
             ...state.setting.duration,
-            [action.slot]: action.duration,
+            [slot]: duration,
           },
         },
         data: {
@@ -162,7 +185,7 @@ function reducer(
           ...state.setting,
           alarm: {
             ...state.setting.alarm,
-            ...action.alarm,
+            [action.key]: action.value,
           },
         },
       };
@@ -174,7 +197,7 @@ function reducer(
           ...state.setting,
           theme: {
             ...state.setting.theme,
-            ...action.theme,
+            [action.key]: action.value,
           },
         },
       };
@@ -189,46 +212,56 @@ function reducer(
       };
     }
     case "RESET": {
-      return defaultPomoTimer;
+      return {
+        ...state,
+        setting: defaultSetting,
+      };
     }
     case "SWITCH_SLOT": {
       return {
         ...state,
         data: {
           ...state.data,
-          shouldAutoStart: false,
           slot: action.slot,
           timeLeft: state.setting.duration[action.slot] * 60 * 1000,
           timestamp: null,
         },
+        status: "Idle",
       };
     }
     case "FINISH_SLOT": {
       let slot: Slot;
       let count: number;
-      let shouldAutoStart = false;
+      let timestamp: number | null = null;
+      let status: Status = "Idle";
       if (state.data.slot === "Pomodoro") {
         slot =
           (state.data.count + 1) % state.setting.longBreakInterval
             ? "Short Break"
             : "Long Break";
         count = state.data.count + 1;
-        shouldAutoStart = state.setting.shouldAutoStartBreak;
+        if (state.setting.shouldAutoStartBreak) {
+          timestamp = Date.now() + 500;
+          status = "Pending";
+        }
       } else {
         slot = "Pomodoro";
         count = state.data.count;
-        shouldAutoStart = state.setting.shouldAutoStartPomodoro;
+        if (state.setting.shouldAutoStartPomodoro) {
+          timestamp = Date.now() + 500;
+          status = "Pending";
+        }
       }
 
       return {
         ...state,
         data: {
           count,
-          shouldAutoStart,
           slot,
           timeLeft: state.setting.duration[slot] * 60 * 1000,
-          timestamp: null,
+          timestamp,
         },
+        status,
       };
     }
     case "RESET_COUNT": {
@@ -240,6 +273,17 @@ function reducer(
         },
       };
     }
+    case "RESET_TIMER": {
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          timeLeft: state.setting.duration[state.data.slot] * 60 * 1000,
+          timestamp: null,
+        },
+        status: "Idle",
+      };
+    }
     case "START_TIMER": {
       return {
         ...state,
@@ -247,6 +291,7 @@ function reducer(
           ...state.data,
           timestamp: Date.now(),
         },
+        status: "Timing",
       };
     }
     case "STOP_TIMER": {
@@ -256,53 +301,59 @@ function reducer(
           ...state.data,
           timestamp: null,
         },
+        status: "Idle",
       };
     }
     case "UPDATE_TIMER": {
       if (state.data.timestamp) {
         const currentTime = Date.now();
-        return {
-          ...state,
-          data: {
-            ...state.data,
-            timeLeft:
-              state.data.timeLeft - (currentTime - state.data.timestamp),
-            timestamp: currentTime,
-          },
-        };
+        if (currentTime > state.data.timestamp) {
+          return {
+            ...state,
+            data: {
+              ...state.data,
+              timeLeft:
+                state.data.timeLeft - (currentTime - state.data.timestamp),
+              timestamp: currentTime,
+            },
+            status: "Timing",
+          };
+        }
       }
       return state;
     }
   }
 }
 
-const defaultPomoTimer: PomoTimerState = {
-  setting: {
-    duration: {
-      Pomodoro: 25,
-      "Short Break": 5,
-      "Long Break": 15,
-    },
-    shouldAutoStartBreak: false,
-    shouldAutoStartPomodoro: false,
-    longBreakInterval: 4,
-    alarm: {
-      name: "kitchen",
-      volume: 50,
-      repeat: 1,
-    },
-    theme: {
-      Pomodoro: "pomo1",
-      "Short Break": "pomo2",
-      "Long Break": "pomo3",
-    },
-    resetTime: "06:00",
+const defaultSetting: SettingState = {
+  duration: {
+    Pomodoro: 25,
+    "Short Break": 5,
+    "Long Break": 15,
   },
+  shouldAutoStartBreak: false,
+  shouldAutoStartPomodoro: false,
+  longBreakInterval: 4,
+  alarm: {
+    name: "kitchen",
+    volume: 50,
+    repeat: 1,
+  },
+  theme: {
+    Pomodoro: "pomo1",
+    "Short Break": "pomo2",
+    "Long Break": "pomo3",
+  },
+  resetTime: "06:00",
+};
+
+const defaultPomoTimer: PomoTimerState = {
+  setting: defaultSetting,
   data: {
     count: 0,
-    shouldAutoStart: false,
     slot: "Pomodoro",
     timeLeft: 25 * 60 * 1000,
     timestamp: null,
   },
+  status: "Idle",
 };

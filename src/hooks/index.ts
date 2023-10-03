@@ -1,10 +1,6 @@
-export { default as useAlarmSound } from "./useAlarmSound";
-
-export { default as useAudio } from "./useAudio";
+export { default as useAudio, type AudioControl } from "./useAudio";
 
 export { default as useBeforeUnload } from "./useBeforeUnload";
-
-export { default as useButtonSound } from "./useButtonSound";
 
 export { default as useFavicon } from "./useFavicon";
 

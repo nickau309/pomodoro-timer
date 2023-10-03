@@ -25,10 +25,10 @@ export default {
   safelist: [{ pattern: /(bg|text)-pomo[1-8]/ }],
   plugins: [
     plugin(function ({ addVariant }) {
-      addVariant("slider-thumb", [
-        "&::-webkit-slider-thumb",
-        "&::-moz-range-thumb",
-        "&::-ms-thumb",
+      addVariant("thumb", ["&::-webkit-slider-thumb", "&::-moz-range-thumb"]);
+      addVariant("track", [
+        "&::-webkit-slider-runnable-track",
+        "&::-moz-range-track",
       ]);
     }),
     require("@headlessui/tailwindcss"),

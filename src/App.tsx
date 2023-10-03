@@ -1,5 +1,5 @@
 import { PomoTimerProvider } from "./contexts";
-import { Root } from "./layouts";
+import { Root } from "./pages";
 
 export default function App() {
   return (

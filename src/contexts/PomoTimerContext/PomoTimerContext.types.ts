@@ -1,7 +1,8 @@
-import { Alarm, Duration, Slot, Theme } from "../../types";
+import type { ReactNode } from "react";
+import type { Alarm, Duration, Slot, Theme } from "../../types";
 
 export type PomoTimerProviderProps = {
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 export type SettingState = {
@@ -16,22 +17,22 @@ export type SettingState = {
 
 export type DataState = {
   count: number;
-  shouldAutoStart: boolean;
   slot: Slot;
   timeLeft: number;
   timestamp: number | null;
 };
 
+export type Status = "Idle" | "Pending" | "Timing";
+
 export type PomoTimerState = {
   setting: SettingState;
   data: DataState;
+  status: Status;
 };
 
 type SetDurationAction = {
   type: "SET_DURATION";
-  slot: Slot;
-  duration: number;
-};
+} & KeyValue<Duration>;
 
 type SetShouldAutoStartBreakAction = {
   type: "SET_SHOULD_AUTO_START_BREAK";
@@ -50,15 +51,17 @@ type SetLongBreakIntervalAction = {
 
 type SetAlarmAction = {
   type: "SET_ALARM";
-  alarm: Partial<Alarm>;
-};
+} & KeyValue<Alarm>;
 
 type SetThemeAction = {
   type: "SET_THEME";
-  theme: Partial<Theme>;
-};
+} & KeyValue<Theme>;
 
-type ResetTimeAction = {
+type KeyValue<T, K = keyof T> = K extends keyof T
+  ? { key: K; value: T[K] }
+  : never;
+
+type SetResetTimeAction = {
   type: "SET_RESET_TIME";
   resetTime: string;
 };
@@ -80,6 +83,10 @@ type ResetCountAction = {
   type: "RESET_COUNT";
 };
 
+type ResetTimerAction = {
+  type: "RESET_TIMER";
+};
+
 type StartTimerAction = {
   type: "START_TIMER";
 };
@@ -99,11 +106,12 @@ export type PomoTimerAction =
   | SetLongBreakIntervalAction
   | SetAlarmAction
   | SetThemeAction
-  | ResetTimeAction
+  | SetResetTimeAction
   | ResetAction
   | SwitchSlotAction
   | FinishSlotAction
   | ResetCountAction
+  | ResetTimerAction
   | StartTimerAction
   | StopTimerAction
   | UpdateTimerAction;

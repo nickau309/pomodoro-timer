@@ -1,4 +1,5 @@
 export type SliderProps = {
-  value: number;
+  label: string;
   onChange: (value: number) => void;
+  value: number;
 };

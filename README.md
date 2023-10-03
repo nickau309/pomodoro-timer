@@ -21,6 +21,7 @@ Custom hooks are used for handling the logic of the timer, timing, and playing a
 - `useEffect`
 - `useId`
 - `useImperativeHandle`
+- `useMemo`
 - `useReducer`
 - `useRef`
 - `useState`
