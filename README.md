@@ -1,47 +1,57 @@
-# pomodoro-timer
-
-[**Live Demo**](https://nickau309.github.io/pomodoro-timer/)
+# Pomodoro Timer
 
 This is a pomodoro timer.
 
+## Demo
+
+[**Deployed on GitHub Pages**](https://nickau309.github.io/pomodoro-timer/)
+
 ## Features
 
-- This timer breaks the work into intervals and separates them by short breaks.
-- It encourages users to fully focus on their work, and takes a break occasionally to restore the energy.
-- Using this timer with a good work planing will boost the productivity.
+- Break the work into intervals and separate them by short breaks
+- Encourage users to fully focus on their work, and take a break occasionally to restore the energy
+- Boost productivity if users use this timer with good work planning
 
-## React
+## Optimizations
 
-Custom hooks are used for handling the logic of the timer, timing, and playing alarm sound.
+- Refactor with TDD methodology to improve the design without breaking any functionality
 
-### Other hooks used
+## Tech Stack
 
-- `useCallback`
-- `useContext`
-- `useEffect`
-- `useId`
-- `useImperativeHandle`
-- `useMemo`
-- `useReducer`
-- `useRef`
-- `useState`
+### TypeScript
 
-## Styling
+- Perform static type checking to find potential type errors at compile time
 
-Tailwind CSS and Headless UI are used for the styling.
+### React
 
-### CSS techniques applied
+- Build the UI of the app
+- Handle the logic of the app with contexts and custom hooks
+- [Headless UI](https://github.com/tailwindlabs/headlessui) is used to get some unstyled and fully accessible UI components
+- Built-in hooks used:
+  - `useCallback`
+  - `useContext`
+  - `useEffect`
+  - `useId`
+  - `useImperativeHandle`
+  - `useMemo`
+  - `useReducer`
+  - `useRef`
+  - `useState`
+
+### Vitest + React Testing Library
+
+- Conduct integration tests to ensure the robustness of the app
+
+### Tailwind CSS
 
 - Flexbox
 - Grid
 - Responsive design
 
-### Packages used
+### ESLint
 
-- Headless UI
-- Tailwind CSS
+- Analyze the code statically to identify and avoid errors
 
-## Web APIs used
+### Prettier
 
-- `window.confirm()`
-- `window.localStorage`
+- Format the code in a consistent style
