@@ -6,6 +6,6 @@ export { default as useFavicon } from "./useFavicon";
 
 export { default as useInterval } from "./useInterval";
 
-export { default as useSetStorageResetTime } from "./useSetStorageResetTime";
+export { default as useLocalStorage } from "./useLocalStorage";
 
 export { default as useTitle } from "./useTitle";

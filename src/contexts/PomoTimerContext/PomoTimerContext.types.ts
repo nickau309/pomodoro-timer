@@ -12,7 +12,6 @@ export type SettingState = {
   longBreakInterval: number;
   alarm: Alarm;
   theme: Theme;
-  resetTime: string;
 };
 
 export type DataState = {
@@ -61,11 +60,6 @@ type KeyValue<T, K = keyof T> = K extends keyof T
   ? { key: K; value: T[K] }
   : never;
 
-type SetResetTimeAction = {
-  type: "SET_RESET_TIME";
-  resetTime: string;
-};
-
 type ResetAction = {
   type: "RESET";
 };
@@ -106,7 +100,6 @@ export type PomoTimerAction =
   | SetLongBreakIntervalAction
   | SetAlarmAction
   | SetThemeAction
-  | SetResetTimeAction
   | ResetAction
   | SwitchSlotAction
   | FinishSlotAction

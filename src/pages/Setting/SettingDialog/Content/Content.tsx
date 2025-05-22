@@ -37,7 +37,7 @@ export default function Content({ setting }: ContentProps) {
         <LongBreakInterval value={setting.longBreakInterval} />
         <Alarm alarm={setting.alarm} />
         <ColorThemes theme={setting.theme} />
-        <CountResetTime value={setting.resetTime} />
+        <CountResetTime />
         <ResetToDefault />
       </div>
       <div className="rounded-b-lg bg-neutral-200/60 px-5 py-3.5 text-right">

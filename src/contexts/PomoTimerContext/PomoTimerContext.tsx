@@ -11,7 +11,6 @@ import {
   useBeforeUnload,
   useFavicon,
   useInterval,
-  useSetStorageResetTime,
   type AudioControl,
 } from "../../hooks";
 import type { Slot } from "../../types";
@@ -74,8 +73,6 @@ export function PomoTimerProvider({ children }: PomoTimerProviderProps) {
   useBeforeUnload(pomo.status === "Timing");
 
   useFavicon(`favicons/favicon-${pomo.setting.theme[pomo.data.slot]}.ico`);
-
-  useSetStorageResetTime(pomo.setting.resetTime);
 
   return (
     <AudioControlContext.Provider value={play}>
@@ -199,15 +196,6 @@ function reducer(
             ...state.setting.theme,
             [action.key]: action.value,
           },
-        },
-      };
-    }
-    case "SET_RESET_TIME": {
-      return {
-        ...state,
-        setting: {
-          ...state.setting,
-          resetTime: action.resetTime,
         },
       };
     }
@@ -344,7 +332,6 @@ const defaultSetting: SettingState = {
     "Short Break": "pomo2",
     "Long Break": "pomo3",
   },
-  resetTime: "06:00",
 };
 
 const defaultPomoTimer: PomoTimerState = {

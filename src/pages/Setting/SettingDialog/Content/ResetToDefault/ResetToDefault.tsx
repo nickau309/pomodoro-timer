@@ -1,12 +1,14 @@
 import { ArrowPathIcon } from "@heroicons/react/24/solid";
 import { usePomoTimerDispatch } from "../../../../../contexts";
 import { classNames } from "../../../../../utils";
+import { resetResetTime } from "../../../../../utils/setting/resetTime";
 
 export default function ResetToDefault() {
   const dispatch = usePomoTimerDispatch();
 
   const handleClick = () => {
     dispatch({ type: "RESET" });
+    resetResetTime();
   };
 
   return (
