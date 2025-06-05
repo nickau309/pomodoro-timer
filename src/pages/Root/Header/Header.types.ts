@@ -1,5 +1,5 @@
-import type { SettingState } from "../../../contexts";
+import type { Setting } from "../../../types/data";
 
 export type HeaderProps = {
-  setting: SettingState;
+  setting: Setting;
 };

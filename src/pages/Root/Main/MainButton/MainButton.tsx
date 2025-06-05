@@ -1,14 +1,11 @@
-import { useAudioControl, usePomoTimerDispatch } from "../../../../contexts";
+import { usePomoTimerDispatch } from "../../../../contexts";
 import { classNames } from "../../../../utils";
 import type { MainButtonProps } from "./MainButton.types";
 
 export default function MainButton({ color, isTiming }: MainButtonProps) {
-  const play = useAudioControl();
-
   const dispatch = usePomoTimerDispatch();
 
   const handleClick = () => {
-    play({ name: "button" });
     dispatch({ type: isTiming ? "STOP_TIMER" : "START_TIMER" });
   };
 

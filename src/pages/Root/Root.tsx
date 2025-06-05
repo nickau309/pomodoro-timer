@@ -4,10 +4,11 @@ import Layout from "./Layout";
 import Main from "./Main";
 
 export default function Root() {
-  const { setting, data, status } = usePomoTimer();
+  const { setting, data, isTiming } = usePomoTimer();
 
   const color = setting.theme[data.slot];
   const initTimeLeftInSec = setting.duration[data.slot] * 60;
+  const timeLeft = setting.duration[data.slot] * 60 * 1000 - data.timePass;
 
   return (
     <Layout color={color}>
@@ -16,7 +17,8 @@ export default function Root() {
         color={color}
         data={data}
         initTimeLeftInSec={initTimeLeftInSec}
-        status={status}
+        isTiming={isTiming}
+        timeLeft={timeLeft}
       />
     </Layout>
   );

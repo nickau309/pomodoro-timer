@@ -9,7 +9,9 @@ export default function CountResetButton({
 
   const handleClick = () => {
     if (confirm("Do you want to refresh the pomodoro count?")) {
-      dispatch({ type: "RESET_COUNT" });
+      dispatch({
+        type: "RESET_COUNT",
+      });
     }
   };
 

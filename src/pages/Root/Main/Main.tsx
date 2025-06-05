@@ -1,3 +1,4 @@
+import { useAudioControl } from "../../../contexts";
 import { useTitle } from "../../../hooks";
 import CountResetButton from "./CountResetButton";
 import ForwardButton from "./ForwardButton";
@@ -10,11 +11,12 @@ export default function Main({
   color,
   data,
   initTimeLeftInSec,
-  status,
+  isTiming,
+  timeLeft,
 }: MainProps) {
-  const isTiming = status === "Timing";
+  const play = useAudioControl();
 
-  const timeLeftInSec = Math.ceil(data.timeLeft / 1000);
+  const timeLeftInSec = Math.ceil(timeLeft / 1000);
   const minute = Math.floor(timeLeftInSec / 60)
     .toString()
     .padStart(2, "0");

@@ -4,8 +4,6 @@ export { default as useBeforeUnload } from "./useBeforeUnload";
 
 export { default as useFavicon } from "./useFavicon";
 
-export { default as useInterval } from "./useInterval";
-
 export { default as useLocalStorage } from "./useLocalStorage";
 
 export { default as useTitle } from "./useTitle";

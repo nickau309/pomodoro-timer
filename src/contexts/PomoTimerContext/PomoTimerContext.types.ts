@@ -1,33 +1,20 @@
 import type { ReactNode } from "react";
 import type { Alarm, Duration, Slot, Theme } from "../../types";
+import type { Data, Setting } from "../../types/data";
 
 export type PomoTimerProviderProps = {
   children: ReactNode;
 };
 
-export type SettingState = {
-  duration: Duration;
-  shouldAutoStartBreak: boolean;
-  shouldAutoStartPomodoro: boolean;
-  longBreakInterval: number;
-  alarm: Alarm;
-  theme: Theme;
-};
-
-export type DataState = {
-  count: number;
-  slot: Slot;
-  timeLeft: number;
-  timestamp: number | null;
-};
-
-export type Status = "Idle" | "Pending" | "Timing";
-
 export type PomoTimerState = {
-  setting: SettingState;
-  data: DataState;
-  status: Status;
+  setting: Setting;
+  data: Data;
+  isTiming: boolean;
 };
+
+type KeyValue<T, K = keyof T> = K extends keyof T
+  ? { key: K; value: T[K] }
+  : never;
 
 type SetDurationAction = {
   type: "SET_DURATION";
@@ -56,25 +43,21 @@ type SetThemeAction = {
   type: "SET_THEME";
 } & KeyValue<Theme>;
 
-type KeyValue<T, K = keyof T> = K extends keyof T
-  ? { key: K; value: T[K] }
-  : never;
-
-type ResetAction = {
-  type: "RESET";
+type ResetSettingAction = {
+  type: "RESET_SETTING";
 };
 
-type SwitchSlotAction = {
-  type: "SWITCH_SLOT";
-  slot: Slot;
+type ResetCountAction = {
+  type: "RESET_COUNT";
 };
 
 type FinishSlotAction = {
   type: "FINISH_SLOT";
 };
 
-type ResetCountAction = {
-  type: "RESET_COUNT";
+type SwitchSlotAction = {
+  type: "SWITCH_SLOT";
+  slot: Slot;
 };
 
 type ResetTimerAction = {
@@ -89,10 +72,6 @@ type StopTimerAction = {
   type: "STOP_TIMER";
 };
 
-type UpdateTimerAction = {
-  type: "UPDATE_TIMER";
-};
-
 export type PomoTimerAction =
   | SetDurationAction
   | SetShouldAutoStartBreakAction
@@ -100,11 +79,10 @@ export type PomoTimerAction =
   | SetLongBreakIntervalAction
   | SetAlarmAction
   | SetThemeAction
-  | ResetAction
-  | SwitchSlotAction
-  | FinishSlotAction
+  | ResetSettingAction
   | ResetCountAction
+  | FinishSlotAction
+  | SwitchSlotAction
   | ResetTimerAction
   | StartTimerAction
-  | StopTimerAction
-  | UpdateTimerAction;
+  | StopTimerAction;

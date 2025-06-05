@@ -1,9 +1,10 @@
-import type { DataState, Status } from "../../../contexts";
 import type { Color } from "../../../types";
+import type { Data } from "../../../types/data";
 
 export type MainProps = {
   color: Color;
-  data: DataState;
+  data: Data;
   initTimeLeftInSec: number;
-  status: Status;
+  isTiming: boolean;
+  timeLeft: number;
 };

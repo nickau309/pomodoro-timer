@@ -1,11 +1,9 @@
 import { PositiveNumberInput, Select, Slider } from "../../../../../components";
 import { ALARM_NAME } from "../../../../../constants";
-import { useAudioControl, usePomoTimerDispatch } from "../../../../../contexts";
+import { usePomoTimerDispatch } from "../../../../../contexts";
 import type { AlarmProps } from "./Alarm.types";
 
 export default function Alarm({ alarm }: AlarmProps) {
-  const play = useAudioControl();
-
   const dispatch = usePomoTimerDispatch();
 
   return (
@@ -16,7 +14,6 @@ export default function Alarm({ alarm }: AlarmProps) {
           list={ALARM_NAME}
           value={alarm.name}
           onChange={(value) => {
-            play({ name: value, volume: alarm.volume });
             dispatch({
               type: "SET_ALARM",
               key: "name",
@@ -30,7 +27,6 @@ export default function Alarm({ alarm }: AlarmProps) {
           label="volume"
           value={alarm.volume}
           onChange={(value) => {
-            play({ name: alarm.name, volume: value });
             dispatch({
               type: "SET_ALARM",
               key: "volume",

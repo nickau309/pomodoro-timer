@@ -7,7 +7,9 @@ export default function ResetToDefault() {
   const dispatch = usePomoTimerDispatch();
 
   const handleClick = () => {
-    dispatch({ type: "RESET" });
+    dispatch({
+      type: "RESET_SETTING",
+    });
     resetResetTime();
   };
 

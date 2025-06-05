@@ -7,7 +7,9 @@ export default function ForwardButton({ isTiming }: ForwardButtonProps) {
   const dispatch = usePomoTimerDispatch();
 
   const handleClick = () => {
-    dispatch({ type: "FINISH_SLOT" });
+    dispatch({
+      type: "FINISH_SLOT",
+    });
   };
 
   return (

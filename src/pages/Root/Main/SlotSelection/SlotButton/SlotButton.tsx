@@ -19,7 +19,9 @@ export default function SlotButton({
         );
 
       if (shouldResetTimer) {
-        dispatch({ type: "RESET_TIMER" });
+        dispatch({
+          type: "RESET_TIMER",
+        });
       }
     }
   };

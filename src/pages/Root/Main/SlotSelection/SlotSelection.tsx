@@ -1,8 +1,8 @@
 import { RadioGroup } from "@headlessui/react";
 import { SLOT } from "../../../../constants";
 import { usePomoTimerDispatch } from "../../../../contexts";
-import SlotButton from "./SlotButton";
 import type { Slot } from "../../../../types";
+import SlotButton from "./SlotButton";
 import type { SlotSelectionProps } from "./SlotSelection.types";
 
 export default function SlotSelection({
@@ -19,7 +19,10 @@ export default function SlotSelection({
       );
 
     if (shouldSwitchSlot) {
-      dispatch({ type: "SWITCH_SLOT", slot });
+      dispatch({
+        type: "SWITCH_SLOT",
+        slot,
+      });
     }
   };
 
