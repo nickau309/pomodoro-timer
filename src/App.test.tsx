@@ -1,9 +1,9 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
-import { ALARM_NAME, COLOR, SLOT } from "./constants";
+import { ALARM_NAME, COLOR, SLOT } from "./constants/pomoTimer";
 import App from "./App";
-import type { AlarmName, Color, Slot } from "./types";
+import type { AlarmName, Color, Slot } from "./types/pomoTimer";
 
 type UserEvent = ReturnType<typeof userEvent.setup>;
 
@@ -245,7 +245,7 @@ describe("App", () => {
     const slotRadios = screen.getAllByRole("radio");
     expect(slotRadios).toHaveLength(3);
 
-    for (const name of SLOT) {
+    for (const name of Object.values(SLOT)) {
       const slotRadio = screen.getByRole("radio", { name });
       expect(slotRadio).toBeInTheDocument();
     }
@@ -253,7 +253,7 @@ describe("App", () => {
     const slotRadio = screen.getByRole("radio", { name: slot });
     expect(slotRadio).toBeChecked();
 
-    for (const name of SLOT.slice(1)) {
+    for (const name of Object.values(SLOT).slice(1)) {
       const slotRadio = screen.getByRole("radio", { name });
       expect(slotRadio).not.toBeChecked();
     }
@@ -409,7 +409,7 @@ describe("App", () => {
         const user = userEvent.setup();
         render(<App />);
 
-        for (const slot of SLOT.slice().reverse()) {
+        for (const slot of Object.values(SLOT).slice().reverse()) {
           await perform(user, { type: "CLICK_START_BUTTON" });
           await perform(user, { type: "CLICK_SLOT_RADIO", slot });
 
@@ -422,7 +422,7 @@ describe("App", () => {
         const user = userEvent.setup();
         render(<App />);
 
-        for (const slot of SLOT.slice().reverse()) {
+        for (const slot of Object.values(SLOT).slice().reverse()) {
           await perform(user, { type: "CLICK_SETTING_BUTTON" });
           const minute = getDuration(slot);
           const color = getThemeColor(slot);
@@ -481,7 +481,7 @@ describe("App", () => {
         await perform(user, { type: "CLICK_START_BUTTON" });
         await vi.advanceTimersByTimeAsync(2000);
 
-        for (const nextSlot of SLOT.slice(1)) {
+        for (const nextSlot of Object.values(SLOT).slice(1)) {
           await perform(user, { type: "CLICK_SLOT_RADIO", slot: nextSlot });
 
           const layout = screen.getByTestId("layout");
@@ -532,7 +532,7 @@ describe("App", () => {
         const user = userEvent.setup();
         render(<App />);
 
-        for (const slot of SLOT.slice().reverse()) {
+        for (const slot of Object.values(SLOT).slice().reverse()) {
           await perform(user, { type: "CLICK_SETTING_BUTTON" });
           const minute = getDuration(slot);
           const color = getThemeColor(slot);
@@ -1557,7 +1557,7 @@ describe("App", () => {
       const user = userEvent.setup();
       render(<App />);
 
-      for (const slot of SLOT) {
+      for (const slot of Object.values(SLOT)) {
         await perform(user, { type: "CLICK_SLOT_RADIO", slot: "Pomodoro" });
         await perform(user, { type: "CLICK_START_BUTTON" });
         await perform(user, { type: "CLICK_FORWARD_BUTTON" });
@@ -1582,7 +1582,7 @@ describe("App", () => {
       await perform(user, { type: "CLICK_FORWARD_BUTTON" });
       await vi.advanceTimersByTimeAsync(1000);
 
-      for (const slot of SLOT) {
+      for (const slot of Object.values(SLOT)) {
         await perform(user, { type: "CLICK_SLOT_RADIO", slot });
         await perform(user, { type: "CLICK_COUNT_BUTTON" });
 
@@ -1998,7 +1998,7 @@ describe("App", () => {
         const options = screen.getAllByRole("option");
         expect(options).toHaveLength(5);
 
-        for (const name of ALARM_NAME) {
+        for (const name of Object.values(ALARM_NAME)) {
           const option = screen.getByRole("option", { name });
           expect(option).toBeInTheDocument();
         }
@@ -2013,7 +2013,7 @@ describe("App", () => {
 
         await perform(user, { type: "CLICK_SETTING_BUTTON" });
 
-        for (const name of ALARM_NAME) {
+        for (const name of Object.values(ALARM_NAME)) {
           await perform(user, { type: "CLICK_ALARM_SOUND_BUTTON" });
           await perform(user, { type: "SELECT_ALARM_SOUND_OPTION", name });
 
@@ -2146,7 +2146,7 @@ describe("App", () => {
         await perform(user, { type: "CLICK_SETTING_BUTTON" });
         await perform(user, { type: "CLICK_THEME_BUTTON", slot });
 
-        for (const name of COLOR) {
+        for (const name of Object.values(COLOR)) {
           const colorButton = screen.getByRole("button", { name });
           expect(colorButton).toBeInTheDocument();
         }
@@ -2159,7 +2159,7 @@ describe("App", () => {
         const slot = "Pomodoro";
         await perform(user, { type: "CLICK_SETTING_BUTTON" });
 
-        for (const color of COLOR) {
+        for (const color of Object.values(COLOR)) {
           await perform(user, { type: "CLICK_THEME_BUTTON", slot });
           await perform(user, { type: "CLICK_COLOR_BUTTON", color });
 
@@ -2175,7 +2175,7 @@ describe("App", () => {
         const slot = "Pomodoro";
         await perform(user, { type: "CLICK_SETTING_BUTTON" });
 
-        for (const color of COLOR) {
+        for (const color of Object.values(COLOR)) {
           await perform(user, { type: "CLICK_THEME_BUTTON", slot });
           await perform(user, { type: "CLICK_COLOR_BUTTON", color });
 
@@ -2233,7 +2233,7 @@ describe("App", () => {
         await perform(user, { type: "CLICK_SETTING_BUTTON" });
         await perform(user, { type: "CLICK_THEME_BUTTON", slot });
 
-        for (const name of COLOR) {
+        for (const name of Object.values(COLOR)) {
           const colorButton = screen.getByRole("button", { name });
           expect(colorButton).toBeInTheDocument();
         }
@@ -2246,7 +2246,7 @@ describe("App", () => {
         const slot = "Short Break";
         await perform(user, { type: "CLICK_SETTING_BUTTON" });
 
-        for (const color of COLOR) {
+        for (const color of Object.values(COLOR)) {
           await perform(user, { type: "CLICK_THEME_BUTTON", slot });
           await perform(user, { type: "CLICK_COLOR_BUTTON", color });
 
@@ -2304,7 +2304,7 @@ describe("App", () => {
         await perform(user, { type: "CLICK_SETTING_BUTTON" });
         await perform(user, { type: "CLICK_THEME_BUTTON", slot });
 
-        for (const name of COLOR) {
+        for (const name of Object.values(COLOR)) {
           const colorButton = screen.getByRole("button", { name });
           expect(colorButton).toBeInTheDocument();
         }
@@ -2317,7 +2317,7 @@ describe("App", () => {
         const slot = "Long Break";
         await perform(user, { type: "CLICK_SETTING_BUTTON" });
 
-        for (const color of COLOR) {
+        for (const color of Object.values(COLOR)) {
           await perform(user, { type: "CLICK_THEME_BUTTON", slot });
           await perform(user, { type: "CLICK_COLOR_BUTTON", color });
 
