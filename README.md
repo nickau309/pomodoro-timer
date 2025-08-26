@@ -1,57 +1,74 @@
 # Pomodoro Timer
 
-This is a pomodoro timer.
+Boost productivity with this Pomodoro timer.
 
 ## Demo
 
-[**Deployed on GitHub Pages**](https://nickau309.github.io/pomodoro-timer/)
+[**Live Demo on GitHub Pages**](https://nickau309.github.io/pomodoro-timer/)
 
 ## Features
 
-- Break the work into intervals and separate them by short breaks
-- Encourage users to fully focus on their work, and take a break occasionally to restore the energy
-- Boost productivity if users use this timer with good work planning
-
-## Optimizations
-
-- Refactor with TDD methodology to improve the design without breaking any functionality
+- **3 Modes:** Pomodoro, Short Break, Long Break.
+- **Adjustable Durations:** Set custom focus and break times.
+- **Auto Start:** Start sessions automatically or manually.
+- **Session End Alerts:** Choose from 5 alarms with volume and repeat options.
+- **Themes:** Select from 8 colors for each session.
+- **Daily Progress:** Track sessions and reset at chosen time.
+- **Persistent Settings:** Save preferences with IndexedDB.
+- **Accessible UI:** Support keyboard navigation.
+- **Responsive Design:** Work on desktop, tablet, or phone.
 
 ## Tech Stack
 
-### TypeScript
+- **React**
+- **TypeScript**
+- **Tailwind CSS**
 
-- Perform static type checking to find potential type errors at compile time
+## Getting Started
 
-### React
+### Prerequisites
 
-- Build the UI of the app
-- Handle the logic of the app with contexts and custom hooks
-- [Headless UI](https://github.com/tailwindlabs/headlessui) is used to get some unstyled and fully accessible UI components
-- Built-in hooks used:
-  - `useCallback`
-  - `useContext`
-  - `useEffect`
-  - `useId`
-  - `useImperativeHandle`
-  - `useMemo`
-  - `useReducer`
-  - `useRef`
-  - `useState`
+- [Node.js](https://nodejs.org/) (v18+ recommended)
+- [npm](https://www.npmjs.com/)
 
-### Vitest + React Testing Library
+### Installation
 
-- Conduct integration tests to ensure the robustness of the app
+```sh
+git clone https://github.com/nickau309/pomodoro-timer.git
+cd pomodoro-timer
+npm install
+```
 
-### Tailwind CSS
+### Development
 
-- Flexbox
-- Grid
-- Responsive design
+Start the development server:
 
-### ESLint
+```sh
+npm run dev
+```
 
-- Analyze the code statically to identify and avoid errors
+Open [http://localhost:5173/pomodoro-timer/](http://localhost:5173/pomodoro-timer/) in your browser.
 
-### Prettier
+### Build
 
-- Format the code in a consistent style
+Create a production build:
+
+```sh
+npm run build
+```
+
+Preview the build locally:
+
+```sh
+npm run preview
+```
+
+Open [http://localhost:4173/pomodoro-timer/](http://localhost:4173/pomodoro-timer/) in your browser.
+
+## Deployment
+
+Deploy to GitHub Pages:
+
+```sh
+npm run deploy
+```
